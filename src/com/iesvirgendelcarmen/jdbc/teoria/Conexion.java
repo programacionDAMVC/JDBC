@@ -45,10 +45,25 @@ public class Conexion {
 		
 		if (conexion == null) {
 			new Conexion();
+			Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 		}
 		
 		return conexion; 
 		
 		
+	}
+	
+	static class ShutdownHook extends Thread{
+		@Override
+		public void run() {
+			if (conexion != null)
+				try {
+					System.out.println("Cerrando conexión");
+					conexion.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 }
