@@ -1,6 +1,7 @@
 package com.iesvirgendelcarmen.jdbc.teoria;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,9 +49,20 @@ public class LibroDAOImp implements LibroDAO {
 	}
 
 	@Override
-	public boolean actualizarCategoriaLibro(String nombreCategoria) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean actualizarCategoriaLibro(LibroDTO libro, String nombreCategoria) {
+		int updates = 0;
+		//  UPDATE libro SET categoria='Seguridad' WHERE nombre = 'Santa Tecla';
+		String sql = "UPDATE libro SET categoria = ? WHERE nombre = ?;";
+		try (PreparedStatement preparedStatement = conexion.prepareStatement(sql);
+){
+			preparedStatement.setString(1, nombreCategoria);
+			preparedStatement.setString(2, libro.getNombreLibro());
+			updates = preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return updates != 0;
 	}
 
 	@Override
