@@ -8,7 +8,7 @@ public class TestAplicacion {
 		LibroDAO manipulacionLibros = new LibroDAOImp();
 		List<LibroDTO> listaTotal = manipulacionLibros.listarTodosLibros();
 		System.out.println("Nº total de libros: " + listaTotal.size());
-		LibroDTO libroDTO = new LibroDTO("nta Tecla", null, null, null);
+		LibroDTO libroDTO = new LibroDTO("Santa Tecla", null, null, null);
 		System.out.println("Actualización: " + manipulacionLibros.actualizarCategoriaLibro(libroDTO, "Programacion"));
 	}
 
