@@ -44,8 +44,19 @@ public class LibroDAOImp implements LibroDAO {
 
 	@Override
 	public boolean borrarLibro(String nombreLibro, String nombreAutor) {
-		// TODO Auto-generated method stub
-		return false;
+		int borrados = 0;
+		// DELETE FROM libro WHERE nombre = "Terminator" AND autor = "Paquito";
+		String sql = "DELETE FROM libro WHERE nombre = ? AND autor = ?;";
+		try (PreparedStatement preparedStatement = conexion.prepareStatement(sql);
+){
+			preparedStatement.setString(1, nombreLibro);
+			preparedStatement.setString(2, nombreAutor);
+			borrados = preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return borrados != 0;
 	}
 
 	@Override
@@ -67,14 +78,54 @@ public class LibroDAOImp implements LibroDAO {
 
 	@Override
 	public boolean insertarLibro(LibroDTO libro) {
-		// TODO Auto-generated method stub
-		return false;
+		int resultado = 0;
+		//  INSERT INTO libro (nombre, autor, editorial, categoria) VALUES ('1','2','3','4');
+		String sql = "INSERT INTO libro (nombre, autor, editorial, categoria)"
+				+ " VALUES (?,?,?,?);";
+		try (PreparedStatement psStatement = conexion.prepareStatement(sql);){
+			psStatement.setString(1, libro.getNombreLibro());
+			psStatement.setString(2, libro.getNombreAutor());
+			psStatement.setString(3, libro.getEditorial());
+			psStatement.setString(4, libro.getNombreCategoria());
+			resultado = psStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("Error introduciendo datos");
+		}
+		System.out.println("Insertando datos: " + (resultado == 1));
+		return resultado == 1;
 	}
 
 	@Override
 	public boolean insertarListaLibros(List<LibroDTO> listaLibros) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			conexion.setAutoCommit(false);
+			for (LibroDTO libroDTO : listaLibros) {
+				insertarLibro(libroDTO);
+			}
+			conexion.commit();
+			System.out.println("Insertando datos de lista correctamente ");
+			conexion.setAutoCommit(true);
+			return true;
+		} catch (SQLException e) {
+			try {
+				conexion.rollback();
+				
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} finally {
+				System.out.println("No se puede insertar datos de lista");
+				try {
+					conexion.setAutoCommit(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				return false;
+			}
+		}
+		
 	}
 
 }
